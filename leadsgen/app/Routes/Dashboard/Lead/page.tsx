@@ -84,28 +84,28 @@ export default function LeadsPage() {
           <Table >
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Created At</TableHead>
-                <TableHead>AI Message</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-center">Name</TableHead>
+                <TableHead className="text-center">Email</TableHead>
+                <TableHead className="text-center">Status</TableHead>
+                <TableHead className="text-center">Created At</TableHead>
+                <TableHead className="text-center">AI Message</TableHead>
+                <TableHead className="text-center">Actions</TableHead>
               </TableRow>
             </TableHeader>
 
             <TableBody>
               {leads.map((lead) => (
                 <TableRow key={lead.id} className="hover:bg-muted/50 transition">
-                  <TableCell className="font-medium">{lead.name}</TableCell>
-                  <TableCell>{lead.email}</TableCell>
-                  <TableCell>
+                  <TableCell className="font-medium text-center">{lead.name}</TableCell>
+                  <TableCell className="text-center">{lead.email}</TableCell>
+                  <TableCell className="text-center">
                     <p>{lead?.status === "Active" ? "Active" : "In Active"}</p>
                   </TableCell>
-                  <TableCell>{lead.createdAt}</TableCell>
-                  <TableCell className="max-w-[250px] truncate">
+                  <TableCell className="text-center">{lead.createdAt}</TableCell>
+                  <TableCell className="max-w-[250px] text-center truncate">
                     {lead.aiMessage}
                   </TableCell>
-                  <TableCell className="text-right space-x-2">
+                  <TableCell className="mx-auto flex justify-center space-x-2">
                     <Button
                       variant="outline"
                       size="sm"
