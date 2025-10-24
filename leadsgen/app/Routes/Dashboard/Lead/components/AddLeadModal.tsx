@@ -15,9 +15,8 @@ import { Lead } from "../page"
 import { useState, useEffect } from "react"
 
 interface ModalInterface {
-    open: boolean
-    lead: Lead | null
-    onClose: () => void
+    open: boolean;
+    onClose: () => void;
     onSave?: (updatedLead: Lead) => void
 }
 

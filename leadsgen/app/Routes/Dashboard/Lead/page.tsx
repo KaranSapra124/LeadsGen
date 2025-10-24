@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { LeadEditModal } from "./components/Modal";
+import { AddLeadModal } from "./components/AddLeadModal";
 
 
 export interface Lead {
@@ -51,6 +52,7 @@ export default function LeadsPage() {
       aiMessage: "",
     },
   })
+  const [isAdd, setIsAdd] = useState<boolean>(false)
 
   const handleEdit = (item: Lead) => {
     setIsOpen({ open: true, lead: item })
@@ -63,9 +65,10 @@ export default function LeadsPage() {
   return (
     <>
       {isOpen?.open && <LeadEditModal lead={isOpen?.lead} open={isOpen?.open} onClose={() => setIsOpen((prev) => ({ ...prev, open: false }))} />}
+      {isAdd && <AddLeadModal onClose={() => setIsAdd(!isAdd)} open={isAdd} />}
       <div className="p-8">
         <h1 className="text-2xl font-semibold mb-6">Leads</h1>
-
+        <Button>Add New Lead</Button>
         <div className="rounded-md w-full border">
           <Table >
             <TableHeader>
