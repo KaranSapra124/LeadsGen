@@ -67,8 +67,10 @@ export default function LeadsPage() {
       {isOpen?.open && <LeadEditModal lead={isOpen?.lead} open={isOpen?.open} onClose={() => setIsOpen((prev) => ({ ...prev, open: false }))} />}
       {isAdd && <AddLeadModal onClose={() => setIsAdd(!isAdd)} open={isAdd} />}
       <div className="p-8">
-        <h1 className="text-2xl font-semibold mb-6">Leads</h1>
-        <Button>Add New Lead</Button>
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-semibold mb-6">Leads</h1>
+          <Button onClick={()=>setIsAdd(true)}>Add New Lead</Button>
+        </div>
         <div className="rounded-md w-full border">
           <Table >
             <TableHeader>
