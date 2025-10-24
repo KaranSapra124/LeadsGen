@@ -10,8 +10,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { LeadEditModal } from "./components/Modal";
+import { LeadEditModal } from "./components/EditLeadModal";
 import { AddLeadModal } from "./components/AddLeadModal";
+import { DeleteLeadModal } from "./components/DeleteLeadModal";
 
 
 export interface Lead {
@@ -24,6 +25,7 @@ export interface Lead {
 }
 
 export default function LeadsPage() {
+  const [deleteModal, setDeleteModal] = useState({ deleteId: Infinity, isDelete: false, deleteData: { id: Infinity, leadName: '' } })
   const [leads, setLeads] = useState<Lead[]>([
     {
       id: 1,
@@ -66,10 +68,17 @@ export default function LeadsPage() {
     <>
       {isOpen?.open && <LeadEditModal lead={isOpen?.lead} open={isOpen?.open} onClose={() => setIsOpen((prev) => ({ ...prev, open: false }))} />}
       {isAdd && <AddLeadModal onClose={() => setIsAdd(!isAdd)} open={isAdd} />}
+      {deleteModal && <DeleteLeadModal
+        open={deleteModal?.isDelete}
+        onClose={() => setDeleteModal({ deleteId: Infinity, isDelete: false, deleteData: { leadName: "", id: Infinity } })}
+        onDelete={() => handleDelete(deleteModal?.deleteId)}
+        leadName={deleteModal?.deleteData?.leadName}
+      />
+      }
       <div className="p-8">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-semibold mb-6">Leads</h1>
-          <Button onClick={()=>setIsAdd(true)}>Add New Lead</Button>
+          <Button onClick={() => setIsAdd(true)}>Add New Lead</Button>
         </div>
         <div className="rounded-md w-full border">
           <Table >
@@ -107,7 +116,7 @@ export default function LeadsPage() {
                     <Button
                       variant="destructive"
                       size="sm"
-                      onClick={() => handleDelete(lead.id || 0)}
+                      onClick={() => setDeleteModal({ deleteData: { id: lead?.id, leadName: lead?.name } ,deleteId:lead?.id,isDelete:true})}
                     >
                       Delete
                     </Button>
