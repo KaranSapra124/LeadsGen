@@ -6,7 +6,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         <>
             <div className='flex'>
                 <RootLayout />
-                <div className=' flex justify-center  w-full'>
+                <div className='    mx-auto w-full'>
                     {children}
                 </div>
             </div>

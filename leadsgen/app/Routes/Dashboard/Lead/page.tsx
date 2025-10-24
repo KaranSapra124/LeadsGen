@@ -77,7 +77,7 @@ export default function LeadsPage() {
       }
       <div className="p-8">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-semibold mb-6">Leads</h1>
+          <h1 className="md:text-3xl text-xl text-blue-600 font-semibold mb-6 ">Leads</h1>
           <Button onClick={() => setIsAdd(true)}>Add New Lead</Button>
         </div>
         <div className="rounded-md w-full border">
@@ -116,7 +116,7 @@ export default function LeadsPage() {
                     <Button
                       variant="destructive"
                       size="sm"
-                      onClick={() => setDeleteModal({ deleteData: { id: lead?.id, leadName: lead?.name } ,deleteId:lead?.id,isDelete:true})}
+                      onClick={() => setDeleteModal({ deleteData: { id: lead?.id, leadName: lead?.name }, deleteId: lead?.id, isDelete: true })}
                     >
                       Delete
                     </Button>
