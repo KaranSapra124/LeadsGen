@@ -1,13 +1,26 @@
-const express = require('express');
-const app = express();
-const routes = require("./Routes/Routes")
-require("dotenv").config();
-const dbFn = require("./Utils/dbConnection")
-dbFn()
-app.use("/api/v1", routes);
+import express from "express";
+import dotenv from "dotenv";
+import routes from "./Routes/Routes.js";
+import { connectDB } from "./Utils/dbConnection.js";
 
+import cors from "cors"
+const app = express()
+dotenv.config();
+app.use(cors({
+  origin: "http://localhost:3000", // or your frontend URL
+  methods: ["GET", "POST", "PUT", "DELETE"],
+}));
+
+// ✅ Connect DB first
+connectDB();
+
+// ✅ Always use express.json() BEFORE routes
 app.use(express.json());
 
-app.listen(3000, () => {
-    console.log("Server running")
-})
+// ✅ Mount routes
+app.use("/api/v1", routes);
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});

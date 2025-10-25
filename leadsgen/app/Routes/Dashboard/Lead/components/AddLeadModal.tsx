@@ -13,14 +13,17 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Lead } from "../page"
 import { useState, useEffect } from "react"
+import { useAddLead } from "@/app/utils/queryServices"
+import { backendUrl } from "@/app/utils/globalVariables"
 
 interface ModalInterface {
     open: boolean;
     onClose: () => void;
-    onSave?: (updatedLead: Lead) => void
 }
 
-export function AddLeadModal({ open, onClose, onSave }: ModalInterface) {
+export function AddLeadModal({ open, onClose }: ModalInterface) {
+
+    const { mutate: handleAddLead } = useAddLead()
     const [formData, setFormData] = useState<Lead>({
         id: 0,
         name: "",
@@ -37,9 +40,7 @@ export function AddLeadModal({ open, onClose, onSave }: ModalInterface) {
     }
 
     const handleSubmit = () => {
-        if (onSave) {
-            onSave(formData)
-        }
+        handleAddLead({ url: `${backendUrl}/add-lead`, item: formData })
         onClose()
     }
 

@@ -27,6 +27,5 @@ const LeadSchema = new mongoose.Schema(
 );
 
 // Prevent model overwrite issues in Next.js (hot reload)
-const Lead = mongoose.models.Lead || mongoose.model("Lead", LeadSchema);
-
-export default Lead;
+const Leads = mongoose.model("Lead", LeadSchema);
+export default Leads
