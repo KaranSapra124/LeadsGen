@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { addLeads, deleteLead, editLead, getLeads } from "./services";
+import { addLeads, deleteLead, editLead, getLeads, register } from "./services";
 import { Lead } from "../Routes/Dashboard/Lead/page";
+import { RegisterFormData } from "../Auth/register/page";
 
 interface AddLeadProps {
     url: string;
@@ -27,3 +28,9 @@ export const useEditLead = () =>
         mutationKey: ["leads"],
         mutationFn: ({ id, data }: { id: string, data: Lead }) => editLead(id, data),
     });
+
+// Auth
+export const useRegister = () => useMutation({
+    mutationKey: ["user"],
+    mutationFn: ({ data }: { data: RegisterFormData }) => register(data)
+});

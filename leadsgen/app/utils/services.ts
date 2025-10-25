@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Lead } from "../Routes/Dashboard/Lead/page";
 import { backendUrl } from "./globalVariables";
+import { RegisterFormData } from "../Auth/register/page";
 
 export const addLeads = (url: string, data: Lead) => {
     return axios.post(url, data)
@@ -13,5 +14,9 @@ export const deleteLead = (item: string) => {
 }
 export const editLead = (id: string, item: Lead) => {
     return axios.post(`${backendUrl}/edit-lead/${id}`, item)
+}
 
+// Auth Routes
+export const register = (item: RegisterFormData) => {
+    return axios.post(`${backendUrl}/auth/register`, item)
 }
