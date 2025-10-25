@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { addLeads, getLeads } from "./services";
+import { addLeads, deleteLead, getLeads } from "./services";
 import { Lead } from "../Routes/Dashboard/Lead/page";
 
 interface AddLeadProps {
@@ -16,4 +16,9 @@ export const useGetLead = () =>
     useQuery({
         queryKey: ["leads"],
         queryFn: getLeads
+    });
+export const useDeleteLead = () =>
+    useMutation({
+        mutationKey: ["leads"],
+        mutationFn: ({ id }: { id: string }) => deleteLead(id),
     });

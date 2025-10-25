@@ -25,4 +25,16 @@ export const getLeads = async (req, res) => {
         return res.status(401).send({ message: `Error while getting leads: ${err}` })
     }
 }
+export const deleteLead = async (req, res) => {
+
+    try {
+        console.log(req.params.id)
+        const leads = await Leads.findByIdAndDelete(req.params.id)
+        return res.status(200).send({ message: "Leads Fetched!", leads })
+    }
+    catch (err) {
+        return res.status(401).send({ message: `Error while getting leads: ${err}` })
+    }
+}
+
 

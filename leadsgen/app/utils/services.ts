@@ -8,3 +8,6 @@ export const addLeads = (url: string, data: Lead) => {
 export const getLeads = () => {
     return axios.get(`${backendUrl}/get-leads`)
 }
+export const deleteLead = (item: string) => {
+    return axios.get(`${backendUrl}/delete-leads/${item}`)
+}

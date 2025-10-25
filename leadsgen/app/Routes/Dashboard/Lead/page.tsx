@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { LeadEditModal } from "./components/EditLeadModal";
 import { AddLeadModal } from "./components/AddLeadModal";
 import { DeleteLeadModal } from "./components/DeleteLeadModal";
-import { useGetLead } from "@/app/utils/queryServices";
+import { useDeleteLead, useGetLead } from "@/app/utils/queryServices";
 import { Loader } from "@/app/components/Global/Loader";
 
 
@@ -28,9 +28,10 @@ export interface Lead {
 }
 
 export default function LeadsPage() {
-  const { data, isSuccess , isLoading } = useGetLead()
+  const { data, isSuccess, isLoading } = useGetLead()
+  const { mutate: handleDeleteFn } = useDeleteLead()
   // console.log(data)
-  const [deleteModal, setDeleteModal] = useState({ deleteId: Infinity, isDelete: false, deleteData: { id: Infinity, leadName: '' } })
+  const [deleteModal, setDeleteModal] = useState({ deleteId: "", isDelete: false, deleteData: { id: '', leadName: '' } })
   const [leads, setLeads] = useState<Lead[]>(data?.data?.leads);
   const [isOpen, setIsOpen] = useState({
     open: false, lead: {
@@ -48,8 +49,8 @@ export default function LeadsPage() {
     setIsOpen({ open: true, lead: item })
   };
 
-  const handleDelete = (id: number) => {
-    setLeads(leads.filter((lead) => lead.id !== id));
+  const handleDelete = (id: string) => {
+    handleDeleteFn({ id: id })
   };
   useEffect(() => setLeads(data?.data?.leads), [isSuccess])
   return (
@@ -58,7 +59,7 @@ export default function LeadsPage() {
       {isAdd && <AddLeadModal onClose={() => setIsAdd(!isAdd)} open={isAdd} />}
       {deleteModal && <DeleteLeadModal
         open={deleteModal?.isDelete}
-        onClose={() => setDeleteModal({ deleteId: Infinity, isDelete: false, deleteData: { leadName: "", id: Infinity } })}
+        onClose={() => setDeleteModal({ deleteId: '', isDelete: false, deleteData: { leadName: "", id: "" } })}
         onDelete={() => handleDelete(deleteModal?.deleteId)}
         leadName={deleteModal?.deleteData?.leadName}
       />
@@ -106,7 +107,7 @@ export default function LeadsPage() {
                     <Button
                       variant="destructive"
                       size="sm"
-                      onClick={() => setDeleteModal({ deleteData: { id: lead?.id, leadName: lead?.name }, deleteId: lead?.id, isDelete: true })}
+                      onClick={() => setDeleteModal({ deleteData: { id: lead._id || '', leadName: lead?.name }, deleteId: lead?._id || '', isDelete: true })}
                     >
                       Delete
                     </Button>
