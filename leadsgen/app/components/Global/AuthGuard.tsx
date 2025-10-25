@@ -9,7 +9,7 @@ const useAuthGuard = () => {
     useEffect(() => {
         const token = localStorage.getItem('userAuth')
         if (!token) {
-            router.push('/login') // redirect to login if not authenticated
+            router.push('/Auth/login') // redirect to login if not authenticated
         }
     }, [router])
 }

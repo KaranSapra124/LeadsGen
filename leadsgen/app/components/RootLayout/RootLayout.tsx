@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import React from "react"
+import useAuthGuard from "../Global/AuthGuard"
 
 const RootLayout = () => {
     const pathname = usePathname()
@@ -44,7 +45,7 @@ const RootLayout = () => {
             link: "/Routes/Dashboard/Settings",
         },
     ]
-
+    useAuthGuard()
     return (
         <aside className="flex flex-col items-start justify-between bg-neutral-900 text-white p-4  h-screen min-w-60 shadow-lg">
             {/* Top Section */}
@@ -61,8 +62,8 @@ const RootLayout = () => {
                                 key={item.title}
                                 href={item.link}
                                 className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 ${isActive
-                                        ? "bg-blue-600 text-white shadow-md"
-                                        : "text-gray-300 hover:bg-neutral-800 hover:text-white"
+                                    ? "bg-blue-600 text-white shadow-md"
+                                    : "text-gray-300 hover:bg-neutral-800 hover:text-white"
                                     }`}
                             >
                                 <span className="text-gray-300">{item.icon}</span>
