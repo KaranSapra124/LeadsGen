@@ -36,5 +36,20 @@ export const deleteLead = async (req, res) => {
         return res.status(401).send({ message: `Error while getting leads: ${err}` })
     }
 }
+export const editLead = async (req, res) => {
+    const leadData = {
+        name: req.body.name,
+        email: req.body.email,
+        status: req.body.status,
+        aiMessage: req.body.aiMessage
+    }
+    try {
+        await Leads.findByIdAndUpdate(req.params.id, leadData);
+        return res.status(200).send({ message: "Lead Updated!" })
+    }
+    catch (err) {
+        return res.status(401).send({ message: `Error while updating lead: ${err}` })
+    }
+}
 
 

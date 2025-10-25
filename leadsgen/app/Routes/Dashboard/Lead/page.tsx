@@ -15,6 +15,7 @@ import { AddLeadModal } from "./components/AddLeadModal";
 import { DeleteLeadModal } from "./components/DeleteLeadModal";
 import { useDeleteLead, useGetLead } from "@/app/utils/queryServices";
 import { Loader } from "@/app/components/Global/Loader";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 export interface Lead {
@@ -28,6 +29,7 @@ export interface Lead {
 }
 
 export default function LeadsPage() {
+  const queryClient = useQueryClient()
   const { data, isSuccess, isLoading } = useGetLead()
   const { mutate: handleDeleteFn } = useDeleteLead()
   // console.log(data)
@@ -50,9 +52,11 @@ export default function LeadsPage() {
   };
 
   const handleDelete = (id: string) => {
-    handleDeleteFn({ id: id })
+    handleDeleteFn({ id: id }, {
+      onSuccess: () => queryClient?.invalidateQueries({ queryKey: ['leads'] })
+    })
   };
-  useEffect(() => setLeads(data?.data?.leads), [isSuccess])
+  useEffect(() => setLeads(data?.data?.leads), [data?.data?.leads])
   return (
     <>
       {isOpen?.open && <LeadEditModal lead={isOpen?.lead} open={isOpen?.open} onClose={() => setIsOpen((prev) => ({ ...prev, open: false }))} />}
@@ -84,7 +88,7 @@ export default function LeadsPage() {
               </TableRow>
             </TableHeader>
 
-            {<TableBody>
+            {leads?.length > 0 ? <TableBody>
               {leads?.map((lead) => (
                 <TableRow key={lead._id} className="hover:bg-muted/50 transition">
                   <TableCell className="font-medium text-center">{lead.name}</TableCell>
@@ -114,7 +118,16 @@ export default function LeadsPage() {
                   </TableCell>
                 </TableRow>
               ))}
-            </TableBody>}
+            </TableBody> : <TableBody>
+              <TableRow>
+                <TableCell colSpan={6}>
+                  <div className="flex justify-center items-center py-10 text-gray-500 text-sm">
+                    No data found
+                  </div>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+            }
           </Table>}
         </div>
       </div>
