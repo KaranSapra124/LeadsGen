@@ -1,6 +1,6 @@
 'use client';
-
-import { useState } from "react";
+import dayjs from "dayjs";
+import { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -13,10 +13,13 @@ import { Button } from "@/components/ui/button";
 import { LeadEditModal } from "./components/EditLeadModal";
 import { AddLeadModal } from "./components/AddLeadModal";
 import { DeleteLeadModal } from "./components/DeleteLeadModal";
+import { useGetLead } from "@/app/utils/queryServices";
+import { Loader } from "@/app/components/Global/Loader";
 
 
 export interface Lead {
   id: number;
+  _id?: string;
   name: string;
   email: string;
   status: string;
@@ -25,25 +28,10 @@ export interface Lead {
 }
 
 export default function LeadsPage() {
+  const { data, isSuccess , isLoading } = useGetLead()
+  // console.log(data)
   const [deleteModal, setDeleteModal] = useState({ deleteId: Infinity, isDelete: false, deleteData: { id: Infinity, leadName: '' } })
-  const [leads, setLeads] = useState<Lead[]>([
-    {
-      id: 1,
-      name: "Karan Sapra",
-      email: "karan@example.com",
-      status: "Active",
-      createdAt: "2025-10-23",
-      aiMessage: "AI suggested follow-up in 3 days",
-    },
-    {
-      id: 2,
-      name: "Rohit Sharma",
-      email: "rohit@example.com",
-      status: "Pending",
-      createdAt: "2025-10-22",
-      aiMessage: "AI recommends sending intro email",
-    },
-  ]);
+  const [leads, setLeads] = useState<Lead[]>(data?.data?.leads);
   const [isOpen, setIsOpen] = useState({
     open: false, lead: {
       id: 0,
@@ -63,7 +51,7 @@ export default function LeadsPage() {
   const handleDelete = (id: number) => {
     setLeads(leads.filter((lead) => lead.id !== id));
   };
-
+  useEffect(() => setLeads(data?.data?.leads), [isSuccess])
   return (
     <>
       {isOpen?.open && <LeadEditModal lead={isOpen?.lead} open={isOpen?.open} onClose={() => setIsOpen((prev) => ({ ...prev, open: false }))} />}
@@ -81,7 +69,9 @@ export default function LeadsPage() {
           <Button onClick={() => setIsAdd(true)}>Add New Lead</Button>
         </div>
         <div className="rounded-md w-full border">
-          <Table >
+          {isLoading ? <div className="flex justify-center items-center h-64">
+            <Loader />
+          </div> : <Table >
             <TableHeader>
               <TableRow>
                 <TableHead className="text-center">Name</TableHead>
@@ -93,15 +83,15 @@ export default function LeadsPage() {
               </TableRow>
             </TableHeader>
 
-            <TableBody>
-              {leads.map((lead) => (
-                <TableRow key={lead.id} className="hover:bg-muted/50 transition">
+            {<TableBody>
+              {leads?.map((lead) => (
+                <TableRow key={lead._id} className="hover:bg-muted/50 transition">
                   <TableCell className="font-medium text-center">{lead.name}</TableCell>
                   <TableCell className="text-center">{lead.email}</TableCell>
                   <TableCell className="text-center">
                     <p>{lead?.status === "Active" ? "Active" : "In Active"}</p>
                   </TableCell>
-                  <TableCell className="text-center">{lead.createdAt}</TableCell>
+                  <TableCell className="text-center">{dayjs(lead?.createdAt)?.format("DD-MM-YYYY")}</TableCell>
                   <TableCell className="max-w-[250px] text-center truncate">
                     {lead.aiMessage}
                   </TableCell>
@@ -123,8 +113,8 @@ export default function LeadsPage() {
                   </TableCell>
                 </TableRow>
               ))}
-            </TableBody>
-          </Table>
+            </TableBody>}
+          </Table>}
         </div>
       </div>
     </>

@@ -15,7 +15,6 @@ const LeadSchema = new mongoose.Schema(
         },
         status: {
             type: String,
-            enum: ["new", "contacted", "converted", "lost"],
             default: "new",
         },
         aiMessage: {

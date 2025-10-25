@@ -16,4 +16,13 @@ export const createLead = async (req, res) => {
     }
 
 }
+export const getLeads = async (req, res) => {
+    try {
+        const leads = await Leads.find()
+        return res.status(200).send({ message: "Leads Fetched!", leads })
+    }
+    catch (err) {
+        return res.status(401).send({ message: `Error while getting leads: ${err}` })
+    }
+}
 

@@ -15,6 +15,7 @@ import { Lead } from "../page"
 import { useState, useEffect } from "react"
 import { useAddLead } from "@/app/utils/queryServices"
 import { backendUrl } from "@/app/utils/globalVariables"
+import { useQueryClient } from "@tanstack/react-query"
 
 interface ModalInterface {
     open: boolean;
@@ -22,7 +23,7 @@ interface ModalInterface {
 }
 
 export function AddLeadModal({ open, onClose }: ModalInterface) {
-
+    const querClient = useQueryClient()
     const { mutate: handleAddLead } = useAddLead()
     const [formData, setFormData] = useState<Lead>({
         id: 0,
@@ -40,7 +41,9 @@ export function AddLeadModal({ open, onClose }: ModalInterface) {
     }
 
     const handleSubmit = () => {
-        handleAddLead({ url: `${backendUrl}/add-lead`, item: formData })
+        handleAddLead({ url: `${backendUrl}/add-lead`, item: formData }, {
+            onSuccess: () => querClient.invalidateQueries({ queryKey: ['leads'] })
+        })
         onClose()
     }
 
