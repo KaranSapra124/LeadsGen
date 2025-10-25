@@ -2,6 +2,7 @@ import axios from "axios";
 import { Lead } from "../Routes/Dashboard/Lead/page";
 import { backendUrl } from "./globalVariables";
 import { RegisterFormData } from "../Auth/register/page";
+import {  loginType } from "../Auth/login/page";
 
 export const addLeads = (url: string, data: Lead) => {
     return axios.post(url, data)
@@ -19,4 +20,7 @@ export const editLead = (id: string, item: Lead) => {
 // Auth Routes
 export const register = (item: RegisterFormData) => {
     return axios.post(`${backendUrl}/auth/register`, item)
+}
+export const login = (item: loginType) => {
+    return axios.post(`${backendUrl}/auth/login`, item)
 }

@@ -2,9 +2,17 @@
 
 import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
+import { useLogin } from '@/app/utils/queryServices'
+import { useRouter } from 'next/navigation'
 // import { toast } from 'react-hot-toast'
 
+export interface loginType {
+    email: string,
+    password: string
+}
 const LoginView = () => {
+    const router = useRouter()
+    const { mutate: handleLogin, data: response, isPending } = useLogin()
     const [formData, setFormData] = useState({ email: '', password: '' })
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -15,9 +23,17 @@ const LoginView = () => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
         // Mock submit
-        console.log('Submitting:', formData)
+        handleLogin({ data: formData }, {
+            onSuccess: (res) => {
+
+                alert(res?.data?.message);
+                localStorage.setItem("userAuth", res?.data?.token)
+                router.push("/")
+            }
+        })
+
         // toast.success('Mock login successful!')
-        setFormData({ email: '', password: '' })
+        // setFormData({ email: '', password: '' })
     }
 
     return (

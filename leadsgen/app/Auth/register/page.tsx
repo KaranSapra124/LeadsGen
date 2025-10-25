@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { useRegister } from '@/app/utils/queryServices'
+import { redirect } from 'next/navigation'
 // import { toast } from 'react-hot-toast'
 
 // Define the form data structure
@@ -15,7 +16,7 @@ export interface RegisterFormData {
 
 
 const RegisterView = () => {
-    const { mutate: handleRegister } = useRegister()
+    const { mutate: handleRegister, data: response, isPending } = useRegister()
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -36,6 +37,11 @@ const RegisterView = () => {
             return
         }
         handleRegister({ data: formData })
+        console.log(response)
+        alert(response?.data?.message);
+        localStorage.setItem("userAuth", response?.data?.token)
+        redirect("/")
+
         // toast.success('Mock registration successful!')
         setFormData({ name: '', email: '', password: '', confirmPassword: '' })
     }
@@ -107,6 +113,7 @@ const RegisterView = () => {
 
                     {/* Submit Button */}
                     <Button
+                        disabled={isPending}
                         type="submit"
                         className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl"
                     >
