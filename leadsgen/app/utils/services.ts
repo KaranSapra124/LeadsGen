@@ -11,3 +11,7 @@ export const getLeads = () => {
 export const deleteLead = (item: string) => {
     return axios.get(`${backendUrl}/delete-leads/${item}`)
 }
+export const editLead = (id: string, item: Lead) => {
+    return axios.post(`${backendUrl}/edit-lead/${id}`, item)
+
+}

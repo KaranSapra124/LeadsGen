@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Lead } from "../page"
 import { useState, useEffect } from "react"
+import { useEditLead } from "@/app/utils/queryServices"
 
 interface ModalInterface {
     open: boolean
@@ -22,6 +23,7 @@ interface ModalInterface {
 }
 
 export function LeadEditModal({ open, lead, onClose, onSave }: ModalInterface) {
+    const { mutate: handleEditLead } = useEditLead()
     const [formData, setFormData] = useState<Lead>({
         id: 0,
         name: "",
@@ -42,9 +44,7 @@ export function LeadEditModal({ open, lead, onClose, onSave }: ModalInterface) {
     }
 
     const handleSubmit = () => {
-        if (onSave) {
-            onSave(formData)
-        }
+        handleEditLead({ id: formData?._id || '', data: formData })
         onClose()
     }
 
