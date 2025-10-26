@@ -3,9 +3,12 @@ import User from "../Model/User.js"
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import dotenv from "dotenv"
+import { GoogleGenAI } from "@google/genai"
 dotenv.config()
 const JWT_SECRET = process.env.JWT_SECRET
 const JWT_EXPIRES_IN = "1d" // token expiry
+const GEMINI_API = process.env.GEMINI_API_KEY
+const genAI = new GoogleGenAI({ apiKey: GEMINI_API });
 
 // Helper: create JWT token
 const generateToken = (user) => {
@@ -73,5 +76,29 @@ export const login = async (req, res) => {
         })
     } catch (err) {
         return res.status(500).json({ message: `Error logging in: ${err.message}` })
+    }
+}
+
+// AI controller
+export const genAIFollowUps = async (req, res) => {
+    try {
+        const prompt = `
+    Lead info:
+    AI Message: ${req.body.aiMessage}
+
+    Suggest a follow-up message according to provided ai message and ideal follow-up date in 2-3 sentences and only return it.
+  `;
+        const result = await genAI.models.generateContent({
+            model: "gemini-2.0-flash",
+            contents: prompt
+        });
+        return res.status(200).json({
+            message: "Ai Message Generated!",
+            aiResponse: result.text
+        })
+
+    } catch (err) {
+        return res.status(500).json({ message: `Error: ${err.message}` })
+
     }
 }
