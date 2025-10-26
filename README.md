@@ -3,7 +3,8 @@
 **LeadsGen.AI** is a platform where you can enter leads and generate follow-up messages through AI according to their queries.
 
 **Live Backend URL:** [https://leadsgen-backend.onrender.com](https://leadsgen-backend.onrender.com)
-**Live Frontend URL:** [https://leadsgenie.netlify.app/](https://leadsgenie.netlify.app/)
+##Live Frontend URL:
+[https://leadsgenie.netlify.app/](https://leadsgenie.netlify.app/)
 **Public GitHub Repo:** [https://github.com/KaranSapra124/LeadsGen](https://github.com/KaranSapra124/LeadsGen)
 
 ---
