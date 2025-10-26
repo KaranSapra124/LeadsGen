@@ -12,7 +12,7 @@ interface FollowUpModalProps {
 }
 
 export const FollowUpModal = ({ open, onClose, aiMessage }: FollowUpModalProps) => {
-    const { mutate: handleGenerateFn, data: aiRes , isPending } = useGenerateFollowUp()
+    const { mutate: handleGenerateFn, data: aiRes, isPending } = useGenerateFollowUp()
 
     useEffect(() => {
         handleGenerateFn({ data: aiMessage })
@@ -28,7 +28,7 @@ export const FollowUpModal = ({ open, onClose, aiMessage }: FollowUpModalProps) 
                 </DialogHeader>
 
                 <div className="mt-4 p-4 border rounded-md bg-gray-50 min-h-[100px]">
-                    {isPending ? "Loading..." :aiRes?.data?.aiResponse || "No message available"}
+                    {isPending ? "Loading..." : aiRes?.data?.aiResponse || "No message available"}
                 </div>
 
                 <div className="flex justify-end gap-3 mt-6">
