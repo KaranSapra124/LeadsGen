@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { addLeads, deleteLead, editLead, getLeads, login, register } from "./services";
+import { addLeads, deleteLead, editLead, generateFollowUp, getLeads, login, register } from "./services";
 import { Lead } from "../Routes/Dashboard/Lead/page";
 import { RegisterFormData } from "../Auth/register/page";
 import { loginType } from "../Auth/login/page";
@@ -15,7 +15,7 @@ export const useAddLead = () =>
     useMutation({
         mutationKey: ["leads"],
         mutationFn: ({ url, item }: AddLeadProps) => addLeads(url, item),
-        onSuccess:()=>useQueryClient().invalidateQueries({queryKey:['leads']})
+        onSuccess: () => useQueryClient().invalidateQueries({ queryKey: ['leads'] })
     });
 export const useGetLead = () =>
     useQuery({
@@ -32,6 +32,11 @@ export const useEditLead = () =>
     useMutation({
         mutationKey: ["leads"],
         mutationFn: ({ id, data }: { id: string, data: Lead }) => editLead(id, data),
+    });
+export const useGenerateFollowUp = () =>
+    useMutation({
+        mutationKey: ["leads"],
+        mutationFn: ({ data }: { data: string }) => generateFollowUp(data),
     });
 
 // Auth

@@ -86,7 +86,7 @@ export const genAIFollowUps = async (req, res) => {
     Lead info:
     AI Message: ${req.body.aiMessage}
 
-    Suggest a follow-up message according to provided ai message and ideal follow-up date in 2-3 sentences and only return it.
+    Suggest a follow-up message according to provided ai message in 2-3 sentences and only return it.
   `;
         const result = await genAI.models.generateContent({
             model: "gemini-2.0-flash",

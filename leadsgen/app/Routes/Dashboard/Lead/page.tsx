@@ -18,6 +18,7 @@ import { DeleteLeadModal } from "./components/DeleteLeadModal";
 import { useDeleteLead, useGetLead } from "@/app/utils/queryServices";
 import { Loader } from "@/app/components/Global/Loader";
 import { useQueryClient } from "@tanstack/react-query";
+import { FollowUpModal } from "./components/FollowUpModal";
 
 export interface Lead {
   id: number;
@@ -35,6 +36,7 @@ export default function LeadsPage() {
   const { mutate: handleDeleteFn } = useDeleteLead();
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [followUpModal, setFollowUpModal] = useState({ open: false, aiMessage: '' })
   const [statusFilter, setStatusFilter] = useState("");
   const [deleteModal, setDeleteModal] = useState({ deleteId: "", isDelete: false, deleteData: { id: '', leadName: '' } });
   const [isOpen, setIsOpen] = useState({
@@ -48,6 +50,9 @@ export default function LeadsPage() {
     },
   });
   const [isAdd, setIsAdd] = useState<boolean>(false);
+
+  // State to store AI follow-ups per lead
+  const [aiFollowUps, setAiFollowUps] = useState<Record<string, string>>({});
 
   const handleEdit = (item: Lead) => {
     setIsOpen({ open: true, lead: item });
@@ -72,10 +77,26 @@ export default function LeadsPage() {
       lead.email.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesStatus =
-      statusFilter === "" || lead.status === statusFilter;
+      statusFilter === "" || statusFilter === "*" || lead.status === statusFilter;
 
     return matchesSearch && matchesStatus;
   });
+
+  // 🔹 Generate AI Follow-Up
+  const generateFollowUp = async (lead: Lead) => {
+    try {
+      const res = await fetch("/api/generateFollowup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lead }),
+      });
+      const data = await res.json();
+      setAiFollowUps(prev => ({ ...prev, [lead._id!]: data.suggestion }));
+    } catch (error) {
+      console.error("Failed to generate follow-up:", error);
+      setAiFollowUps(prev => ({ ...prev, [lead._id!]: "Failed to generate follow-up" }));
+    }
+  };
 
   return (
     <>
@@ -86,7 +107,9 @@ export default function LeadsPage() {
           onClose={() => setIsOpen((prev) => ({ ...prev, open: false }))}
         />
       )}
-
+      {
+        followUpModal?.open && <FollowUpModal aiMessage={followUpModal?.aiMessage} onClose={() => setFollowUpModal({ open: false, aiMessage: '' })} open={followUpModal?.open} />
+      }
       {isAdd && <AddLeadModal onClose={() => setIsAdd(!isAdd)} open={isAdd} />}
 
       {deleteModal && (
@@ -105,8 +128,8 @@ export default function LeadsPage() {
           <Button onClick={() => setIsAdd(true)}>Add New Lead</Button>
         </div>
 
-        {/* 🔍 Search + Filter */}
-        <div className="flex   md:items-center  mb-6 gap-3">
+        {/* Search + Filter */}
+        <div className="flex md:items-center mb-6 gap-3">
           <Input
             type="text"
             placeholder="Search by name or email..."
@@ -142,6 +165,7 @@ export default function LeadsPage() {
                   <TableHead className="text-center">Status</TableHead>
                   <TableHead className="text-center">Created At</TableHead>
                   <TableHead className="text-center">AI Message</TableHead>
+                  <TableHead className="text-center">Follow-Up</TableHead>
                   <TableHead className="text-center">Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -158,17 +182,18 @@ export default function LeadsPage() {
                       <TableCell className="text-center">
                         {dayjs(lead?.createdAt)?.format("DD-MM-YYYY")}
                       </TableCell>
-                      <TableCell className="max-w-[250px] text-center truncate">
-                        {lead.aiMessage}
+                      <TableCell className="max-w-[250px] text-center truncate">{lead.aiMessage}</TableCell>
+
+                      {/* 🔹 AI Follow-Up */}
+                      <TableCell className="text-center">
+                        <Button size="sm" onClick={() => setFollowUpModal({ open: true, aiMessage: lead?.aiMessage })}>Generate</Button>
+                        {aiFollowUps[lead._id!] && (
+                          <p className="mt-1 text-sm text-gray-700 truncate">{aiFollowUps[lead._id!]}</p>
+                        )}
                       </TableCell>
+
                       <TableCell className="mx-auto flex justify-center space-x-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleEdit(lead)}
-                        >
-                          Edit
-                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => handleEdit(lead)}>Edit</Button>
                         <Button
                           variant="destructive"
                           size="sm"
@@ -189,7 +214,7 @@ export default function LeadsPage() {
               ) : (
                 <TableBody>
                   <TableRow>
-                    <TableCell colSpan={6}>
+                    <TableCell colSpan={7}>
                       <div className="flex justify-center items-center py-10 text-gray-500 text-sm">
                         No data found
                       </div>

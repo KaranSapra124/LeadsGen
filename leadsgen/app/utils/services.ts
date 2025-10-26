@@ -2,7 +2,7 @@ import axios from "axios";
 import { Lead } from "../Routes/Dashboard/Lead/page";
 import { backendUrl } from "./globalVariables";
 import { RegisterFormData } from "../Auth/register/page";
-import {  loginType } from "../Auth/login/page";
+import { loginType } from "../Auth/login/page";
 
 export const addLeads = (url: string, data: Lead) => {
     return axios.post(url, data)
@@ -15,6 +15,9 @@ export const deleteLead = (item: string) => {
 }
 export const editLead = (id: string, item: Lead) => {
     return axios.post(`${backendUrl}/edit-lead/${id}`, item)
+}
+export const generateFollowUp = (msg: string) => {
+    return axios.post(`${backendUrl}/ai/follow-up`, { aiMessage: msg })
 }
 
 // Auth Routes
