@@ -21,7 +21,7 @@ export const useGetLead = () =>
     useQuery({
         queryKey: ["leads"],
         queryFn: getLeads,
-        // refetchInterval: 1500
+        refetchInterval: 1500
     });
 export const useDeleteLead = () =>
     useMutation({

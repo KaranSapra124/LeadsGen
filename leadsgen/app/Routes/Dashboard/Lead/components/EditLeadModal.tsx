@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import {
     Dialog,
@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Lead } from "../page"
 import { useState, useEffect } from "react"
 import { useEditLead } from "@/app/utils/queryServices"
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 
 interface ModalInterface {
     open: boolean
@@ -89,14 +90,18 @@ export function LeadEditModal({ open, lead, onClose, onSave }: ModalInterface) {
                     {/* Status */}
                     <div className="grid gap-1.5">
                         <Label htmlFor="status" className="text-sm font-medium">Status</Label>
-                        <Input
-                            id="status"
-                            name="status"
+                        <Select
                             value={formData.status}
-                            onChange={handleChange}
-                            placeholder="Enter status (e.g. Active, Pending)"
-                            className="focus-visible:ring-1 focus-visible:ring-blue-500"
-                        />
+                            onValueChange={(value) => setFormData(prev => ({ ...prev, status: value }))}
+                        >
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="Active">Active</SelectItem>
+                                <SelectItem value="In Active">In Active</SelectItem>
+                            </SelectContent>
+                        </Select>
                     </div>
 
                     {/* AI Message */}

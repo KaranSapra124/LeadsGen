@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import {
     Dialog,
@@ -12,10 +12,11 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Lead } from "../page"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useAddLead } from "@/app/utils/queryServices"
 import { backendUrl } from "@/app/utils/globalVariables"
 import { useQueryClient } from "@tanstack/react-query"
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 
 interface ModalInterface {
     open: boolean;
@@ -34,7 +35,6 @@ export function AddLeadModal({ open, onClose }: ModalInterface) {
         createdAt: "",
     })
 
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target
         setFormData((prev) => ({ ...prev, [name]: value }))
@@ -46,7 +46,6 @@ export function AddLeadModal({ open, onClose }: ModalInterface) {
                 queryClient.invalidateQueries({ queryKey: ['leads'] })
                 onClose()
             }
-
         })
     }
 
@@ -91,14 +90,15 @@ export function AddLeadModal({ open, onClose }: ModalInterface) {
                     {/* Status */}
                     <div className="grid gap-1.5">
                         <Label htmlFor="status" className="text-sm font-medium">Status</Label>
-                        <Input
-                            id="status"
-                            name="status"
-                            value={formData.status}
-                            onChange={handleChange}
-                            placeholder="Enter status (e.g. Active, Pending)"
-                            className="focus-visible:ring-1 focus-visible:ring-blue-500"
-                        />
+                        <Select value={formData.status} onValueChange={(value) => setFormData(prev => ({ ...prev, status: value }))}>
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="Active">Active</SelectItem>
+                                <SelectItem value="In Active">In Active</SelectItem>
+                            </SelectContent>
+                        </Select>
                     </div>
 
                     {/* AI Message */}
