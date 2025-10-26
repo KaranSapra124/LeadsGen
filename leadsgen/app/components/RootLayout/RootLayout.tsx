@@ -2,25 +2,21 @@
 
 import React, { useState } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import useAuthGuard from "../Global/AuthGuard"
-import { Menu, X } from "lucide-react"
+import { Menu, X, LogOut } from "lucide-react"
 
 const RootLayout = () => {
     const pathname = usePathname()
+    const router = useRouter()
     const [isOpen, setIsOpen] = useState(false)
-    useAuthGuard()
+    //   const { logout } = useAuthGuard() // assuming your AuthGuard exposes a logout function
 
     const navLinks = [
         {
             title: "Leads",
             icon: (
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width={20}
-                    height={20}
-                    viewBox="0 0 24 24"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 24 24">
                     <path
                         fill="currentColor"
                         d="M19.938 8H21a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-1.062A8 8 0 0 1 12 23v-2a6 6 0 0 0 6-6V9A6 6 0 0 0 6 9v7H3a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1.062a8.001 8.001 0 0 1 15.876 0M3 10v4h1v-4zm17 0v4h1v-4zM7.76 15.785l1.06-1.696A5.97 5.97 0 0 0 12 15a5.97 5.97 0 0 0 3.18-.911l1.06 1.696A7.96 7.96 0 0 1 12 17a7.96 7.96 0 0 1-4.24-1.215"
@@ -32,12 +28,7 @@ const RootLayout = () => {
         {
             title: "Settings",
             icon: (
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width={20}
-                    height={20}
-                    viewBox="0 0 24 24"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 24 24">
                     <path
                         fill="currentColor"
                         fillRule="evenodd"
@@ -49,14 +40,16 @@ const RootLayout = () => {
         },
     ]
 
+    const handleLogout = () => {
+        localStorage.removeItem("userAuth")
+        router.push("/Auth/login") // redirect to login
+    }
+    useAuthGuard()
     return (
         <>
             {/* 🔹 Mobile Topbar */}
-            <div className="md:hidden flex items-center justify-between  rounded-full text-black px-1 py-1  fixed top-0 left-0 w-fit">
-                <button
-                    onClick={() => setIsOpen(!isOpen)}
-                    className="p-2 rounded-md hover:bg-gray-200"
-                >
+            <div className="md:hidden flex items-center justify-between rounded-full text-black px-1 py-1 fixed top-0 left-0 w-fit">
+                <button onClick={() => setIsOpen(!isOpen)} className="p-2 rounded-md hover:bg-gray-200">
                     {isOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
             </div>
@@ -89,6 +82,15 @@ const RootLayout = () => {
                                 </Link>
                             )
                         })}
+
+                        {/* 🔹 Logout Button */}
+                        <button
+                            onClick={handleLogout}
+                            className="flex items-center gap-3 px-3 py-2 rounded-lg text-red-500 hover:bg-neutral-800 hover:text-red-400 w-full mt-4"
+                        >
+                            <LogOut size={20} />
+                            <span className="font-medium">Logout</span>
+                        </button>
                     </nav>
                 </div>
 
@@ -99,10 +101,7 @@ const RootLayout = () => {
 
             {/* 🔹 Overlay for mobile */}
             {isOpen && (
-                <div
-                    className="fixed inset-0 bg-black/40 z-30 md:hidden"
-                    onClick={() => setIsOpen(false)}
-                />
+                <div className="fixed inset-0 bg-black/40 z-30 md:hidden" onClick={() => setIsOpen(false)} />
             )}
         </>
     )
