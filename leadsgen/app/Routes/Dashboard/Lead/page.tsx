@@ -10,13 +10,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { LeadEditModal } from "./components/EditLeadModal";
 import { AddLeadModal } from "./components/AddLeadModal";
 import { DeleteLeadModal } from "./components/DeleteLeadModal";
 import { useDeleteLead, useGetLead } from "@/app/utils/queryServices";
 import { Loader } from "@/app/components/Global/Loader";
 import { useQueryClient } from "@tanstack/react-query";
-
 
 export interface Lead {
   id: number;
@@ -29,12 +30,13 @@ export interface Lead {
 }
 
 export default function LeadsPage() {
-  const queryClient = useQueryClient()
-  const { data, isSuccess, isLoading } = useGetLead()
-  const { mutate: handleDeleteFn } = useDeleteLead()
-  // console.log(data)
-  const [deleteModal, setDeleteModal] = useState({ deleteId: "", isDelete: false, deleteData: { id: '', leadName: '' } })
-  const [leads, setLeads] = useState<Lead[]>(data?.data?.leads);
+  const queryClient = useQueryClient();
+  const { data: leads, isLoading } = useGetLead();
+  const { mutate: handleDeleteFn } = useDeleteLead();
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [deleteModal, setDeleteModal] = useState({ deleteId: "", isDelete: false, deleteData: { id: '', leadName: '' } });
   const [isOpen, setIsOpen] = useState({
     open: false, lead: {
       id: 0,
@@ -44,91 +46,159 @@ export default function LeadsPage() {
       createdAt: "",
       aiMessage: "",
     },
-  })
-  const [isAdd, setIsAdd] = useState<boolean>(false)
+  });
+  const [isAdd, setIsAdd] = useState<boolean>(false);
 
   const handleEdit = (item: Lead) => {
-    setIsOpen({ open: true, lead: item })
+    setIsOpen({ open: true, lead: item });
   };
 
   const handleDelete = (id: string) => {
     handleDeleteFn({ id: id }, {
-      onSuccess: () => queryClient?.invalidateQueries({ queryKey: ['leads'] })
-    })
+      onSuccess: () => queryClient.invalidateQueries({ queryKey: ['leads'] })
+    });
   };
-  useEffect(() => setLeads(data?.data?.leads), [data?.data?.leads])
+
+  useEffect(() => {
+    if (!isAdd) {
+      queryClient.invalidateQueries({ queryKey: ['leads'] });
+    }
+  }, [isAdd]);
+
+  // 🔹 Filtered Leads
+  const filteredLeads = leads?.data?.leads?.filter((lead: Lead) => {
+    const matchesSearch =
+      lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      lead.email.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesStatus =
+      statusFilter === "" || lead.status === statusFilter;
+
+    return matchesSearch && matchesStatus;
+  });
+
   return (
     <>
-      {isOpen?.open && <LeadEditModal lead={isOpen?.lead} open={isOpen?.open} onClose={() => setIsOpen((prev) => ({ ...prev, open: false }))} />}
+      {isOpen?.open && (
+        <LeadEditModal
+          lead={isOpen?.lead}
+          open={isOpen?.open}
+          onClose={() => setIsOpen((prev) => ({ ...prev, open: false }))}
+        />
+      )}
+
       {isAdd && <AddLeadModal onClose={() => setIsAdd(!isAdd)} open={isAdd} />}
-      {deleteModal && <DeleteLeadModal
-        open={deleteModal?.isDelete}
-        onClose={() => setDeleteModal({ deleteId: '', isDelete: false, deleteData: { leadName: "", id: "" } })}
-        onDelete={() => handleDelete(deleteModal?.deleteId)}
-        leadName={deleteModal?.deleteData?.leadName}
-      />
-      }
+
+      {deleteModal && (
+        <DeleteLeadModal
+          open={deleteModal?.isDelete}
+          onClose={() => setDeleteModal({ deleteId: '', isDelete: false, deleteData: { leadName: "", id: "" } })}
+          onDelete={() => handleDelete(deleteModal?.deleteId)}
+          leadName={deleteModal?.deleteData?.leadName}
+        />
+      )}
+
       <div className="p-8">
-        <div className="flex justify-between items-center">
-          <h1 className="md:text-3xl text-xl text-blue-600 font-semibold mb-6 ">Leads</h1>
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between md:items-center gap-3 mb-6">
+          <h1 className="md:text-3xl text-xl text-blue-600 font-semibold">Leads</h1>
           <Button onClick={() => setIsAdd(true)}>Add New Lead</Button>
         </div>
-        <div className="rounded-md w-full border">
-          {isLoading ? <div className="flex justify-center items-center h-64">
-            <Loader />
-          </div> : <Table >
-            <TableHeader>
-              <TableRow>
-                <TableHead className="text-center">Name</TableHead>
-                <TableHead className="text-center">Email</TableHead>
-                <TableHead className="text-center">Status</TableHead>
-                <TableHead className="text-center">Created At</TableHead>
-                <TableHead className="text-center">AI Message</TableHead>
-                <TableHead className="text-center">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
 
-            {leads?.length > 0 ? <TableBody>
-              {leads?.map((lead) => (
-                <TableRow key={lead._id} className="hover:bg-muted/50 transition">
-                  <TableCell className="font-medium text-center">{lead.name}</TableCell>
-                  <TableCell className="text-center">{lead.email}</TableCell>
-                  <TableCell className="text-center">
-                    <p>{lead?.status === "Active" ? "Active" : "In Active"}</p>
-                  </TableCell>
-                  <TableCell className="text-center">{dayjs(lead?.createdAt)?.format("DD-MM-YYYY")}</TableCell>
-                  <TableCell className="max-w-[250px] text-center truncate">
-                    {lead.aiMessage}
-                  </TableCell>
-                  <TableCell className="mx-auto flex justify-center space-x-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleEdit(lead)}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => setDeleteModal({ deleteData: { id: lead._id || '', leadName: lead?.name }, deleteId: lead?._id || '', isDelete: true })}
-                    >
-                      Delete
-                    </Button>
-                  </TableCell>
+        {/* 🔍 Search + Filter */}
+        <div className="flex   md:items-center  mb-6 gap-3">
+          <Input
+            type="text"
+            placeholder="Search by name or email..."
+            className="w-full md:w-1/4"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+
+          <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value)}>
+            <SelectTrigger className="w-full md:w-1/5">
+              <SelectValue placeholder="Filter by status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="*">All Status</SelectItem>
+              <SelectItem value="Active">Active</SelectItem>
+              <SelectItem value="In Active">In Active</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Table */}
+        <div className="rounded-md w-full border">
+          {isLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <Loader />
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="text-center">Name</TableHead>
+                  <TableHead className="text-center">Email</TableHead>
+                  <TableHead className="text-center">Status</TableHead>
+                  <TableHead className="text-center">Created At</TableHead>
+                  <TableHead className="text-center">AI Message</TableHead>
+                  <TableHead className="text-center">Actions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody> : <TableBody>
-              <TableRow>
-                <TableCell colSpan={6}>
-                  <div className="flex justify-center items-center py-10 text-gray-500 text-sm">
-                    No data found
-                  </div>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-            }
-          </Table>}
+              </TableHeader>
+
+              {filteredLeads?.length > 0 ? (
+                <TableBody>
+                  {filteredLeads.map((lead: Lead) => (
+                    <TableRow key={lead._id} className="hover:bg-muted/50 transition">
+                      <TableCell className="font-medium text-center">{lead.name}</TableCell>
+                      <TableCell className="text-center">{lead.email}</TableCell>
+                      <TableCell className="text-center">
+                        <p>{lead?.status === "Active" ? "Active" : "In Active"}</p>
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {dayjs(lead?.createdAt)?.format("DD-MM-YYYY")}
+                      </TableCell>
+                      <TableCell className="max-w-[250px] text-center truncate">
+                        {lead.aiMessage}
+                      </TableCell>
+                      <TableCell className="mx-auto flex justify-center space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleEdit(lead)}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() =>
+                            setDeleteModal({
+                              deleteData: { id: lead._id || '', leadName: lead?.name },
+                              deleteId: lead?._id || '',
+                              isDelete: true,
+                            })
+                          }
+                        >
+                          Delete
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              ) : (
+                <TableBody>
+                  <TableRow>
+                    <TableCell colSpan={6}>
+                      <div className="flex justify-center items-center py-10 text-gray-500 text-sm">
+                        No data found
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              )}
+            </Table>
+          )}
         </div>
       </div>
     </>

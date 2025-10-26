@@ -23,7 +23,7 @@ interface ModalInterface {
 }
 
 export function AddLeadModal({ open, onClose }: ModalInterface) {
-    const querClient = useQueryClient()
+    const queryClient = useQueryClient()
     const { mutate: handleAddLead } = useAddLead()
     const [formData, setFormData] = useState<Lead>({
         id: 0,
@@ -42,18 +42,21 @@ export function AddLeadModal({ open, onClose }: ModalInterface) {
 
     const handleSubmit = () => {
         handleAddLead({ url: `${backendUrl}/add-lead`, item: formData }, {
-            onSuccess: () => querClient.invalidateQueries({ queryKey: ['leads'] })
+            onSuccess: () => {
+                queryClient.invalidateQueries({ queryKey: ['leads'] })
+                onClose()
+            }
+
         })
-        onClose()
     }
 
     return (
         <Dialog open={open} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-[550px] rounded-2xl border border-gray-200 shadow-lg">
                 <DialogHeader>
-                    <DialogTitle className="text-xl font-semibold">Edit Lead</DialogTitle>
+                    <DialogTitle className="text-xl font-semibold">Add Lead</DialogTitle>
                     <DialogDescription>
-                        Update the lead details and click save to apply changes.
+                        Add the lead details and click save to apply changes.
                     </DialogDescription>
                 </DialogHeader>
 

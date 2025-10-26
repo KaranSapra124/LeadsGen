@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { addLeads, deleteLead, editLead, getLeads, login, register } from "./services";
 import { Lead } from "../Routes/Dashboard/Lead/page";
 import { RegisterFormData } from "../Auth/register/page";
@@ -9,15 +9,19 @@ interface AddLeadProps {
     item: Lead;
 }
 
+
+
 export const useAddLead = () =>
     useMutation({
         mutationKey: ["leads"],
         mutationFn: ({ url, item }: AddLeadProps) => addLeads(url, item),
+        onSuccess:()=>useQueryClient().invalidateQueries({queryKey:['leads']})
     });
 export const useGetLead = () =>
     useQuery({
         queryKey: ["leads"],
-        queryFn: getLeads
+        queryFn: getLeads,
+        // refetchInterval: 1500
     });
 export const useDeleteLead = () =>
     useMutation({
