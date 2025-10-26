@@ -1,12 +1,15 @@
 "use client"
 
+import React, { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import React from "react"
 import useAuthGuard from "../Global/AuthGuard"
+import { Menu, X } from "lucide-react"
 
 const RootLayout = () => {
     const pathname = usePathname()
+    const [isOpen, setIsOpen] = useState(false)
+    useAuthGuard()
 
     const navLinks = [
         {
@@ -45,40 +48,63 @@ const RootLayout = () => {
             link: "/Routes/Dashboard/Settings",
         },
     ]
-    useAuthGuard()
+
     return (
-        <aside className="flex flex-col items-start justify-between bg-neutral-900 text-white p-4  h-screen min-w-60 shadow-lg">
-            {/* Top Section */}
-            <div className="w-full">
-                <h1 className="text-xl font-semibold text-center mb-6 tracking-wide">
-                    LeadsGen<span className="text-blue-500">.AI</span>
-                </h1>
-
-                <nav className="space-y-2 w-full">
-                    {navLinks.map((item) => {
-                        const isActive = pathname === item.link
-                        return (
-                            <Link
-                                key={item.title}
-                                href={item.link}
-                                className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 ${isActive
-                                    ? "bg-blue-600 text-white shadow-md"
-                                    : "text-gray-300 hover:bg-neutral-800 hover:text-white"
-                                    }`}
-                            >
-                                <span className="text-gray-300">{item.icon}</span>
-                                <span className="font-medium">{item.title}</span>
-                            </Link>
-                        )
-                    })}
-                </nav>
+        <>
+            {/* 🔹 Mobile Topbar */}
+            <div className="md:hidden flex items-center justify-between  rounded-full text-black px-1 py-1  fixed top-0 left-0 w-fit">
+                <button
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="p-2 rounded-md hover:bg-gray-200"
+                >
+                    {isOpen ? <X size={24} /> : <Menu size={24} />}
+                </button>
             </div>
 
-            {/* Bottom Section */}
-            <div className="text-sm text-gray-500 w-full text-center border-t border-neutral-800 pt-3">
-                © 2025 LeadsGen.AI
-            </div>
-        </aside>
+            {/* 🔹 Sidebar */}
+            <aside
+                className={`fixed md:static top-0 left-0 h-screen bg-neutral-900 text-white flex flex-col justify-between transform ${isOpen ? "translate-x-0" : "-translate-x-full"
+                    } md:translate-x-0 transition-transform duration-300 w-64 z-40`}
+            >
+                <div className="p-4 mt-12 md:mt-0">
+                    <h1 className="text-xl font-semibold text-center mb-6 tracking-wide hidden md:block">
+                        LeadsGen<span className="text-blue-500">.AI</span>
+                    </h1>
+
+                    <nav className="space-y-2">
+                        {navLinks.map((item) => {
+                            const isActive = pathname === item.link
+                            return (
+                                <Link
+                                    key={item.title}
+                                    href={item.link}
+                                    className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 ${isActive
+                                        ? "bg-blue-600 text-white shadow-md"
+                                        : "text-gray-300 hover:bg-neutral-800 hover:text-white"
+                                        }`}
+                                    onClick={() => setIsOpen(false)}
+                                >
+                                    <span className="text-gray-300">{item.icon}</span>
+                                    <span className="font-medium">{item.title}</span>
+                                </Link>
+                            )
+                        })}
+                    </nav>
+                </div>
+
+                <div className="text-sm text-gray-500 text-center border-t border-neutral-800 py-3">
+                    © 2025 LeadsGen.AI
+                </div>
+            </aside>
+
+            {/* 🔹 Overlay for mobile */}
+            {isOpen && (
+                <div
+                    className="fixed inset-0 bg-black/40 z-30 md:hidden"
+                    onClick={() => setIsOpen(false)}
+                />
+            )}
+        </>
     )
 }
 
