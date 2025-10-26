@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { useLogin } from '@/app/utils/queryServices'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 // import { toast } from 'react-hot-toast'
 
 export interface loginType {
@@ -78,6 +79,8 @@ const LoginView = () => {
                     >
                         Login
                     </Button>
+                    <div className='text-xs text-center text-gray-400 font-semibold'>Don't have an account , <Link className='text-blue-500 underline ' href={"/Auth/register"}>Create</Link></div>
+
                 </form>
             </div>
         </div>

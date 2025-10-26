@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { useRegister } from '@/app/utils/queryServices'
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 // import { toast } from 'react-hot-toast'
 
 // Define the form data structure
@@ -119,6 +120,7 @@ const RegisterView = () => {
                     >
                         Register
                     </Button>
+                    <div className='text-xs text-center text-gray-400 font-semibold'>Already Have An Account , <Link className='text-blue-500 underline ' href={"/Auth/login"}>Login</Link></div>
                 </form>
             </div>
         </div>
