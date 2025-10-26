@@ -103,7 +103,7 @@ export function AddLeadModal({ open, onClose }: ModalInterface) {
 
                     {/* AI Message */}
                     <div className="grid gap-1.5">
-                        <Label htmlFor="aiMessage" className="text-sm font-medium">AI Message</Label>
+                        <Label htmlFor="aiMessage" className="text-sm font-medium">Lead Message</Label>
                         <Textarea
                             id="aiMessage"
                             name="aiMessage"
