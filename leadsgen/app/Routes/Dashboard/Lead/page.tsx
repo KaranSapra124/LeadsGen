@@ -28,7 +28,7 @@ export interface Lead {
   status: string;
   createdAt: string;
   aiMessage: string;
-  leadScore?: Number;
+  leadScore?: number | 0;
 }
 
 export default function LeadsPage() {
@@ -186,7 +186,21 @@ export default function LeadsPage() {
                         {dayjs(lead?.createdAt)?.format("DD-MM-YYYY")}
                       </TableCell>
                       <TableCell className="max-w-[250px] text-center truncate">{lead.aiMessage}</TableCell>
-                      <TableCell className="max-w-[250px] text-center truncate">{lead?.leadScore?.toString() || "N/A"}</TableCell>
+                      <TableCell
+
+                        className={`max-w-[250px] text-center font-semibold truncate
+    ${lead?.leadScore && lead?.leadScore >= 8
+                            ? "text-green-600" // Good lead
+                            : lead?.leadScore && lead?.leadScore >= 5
+                              ? "text-yellow-600" // Medium lead
+                              : lead?.leadScore && lead?.leadScore >= 1
+                                ? "text-red-600" // Poor lead
+                                : "text-gray-400" // N/A or invalid
+                          }
+  `}
+                      >
+                        {lead?.leadScore ? lead.leadScore.toString() : "N/A"}
+                      </TableCell>
 
 
                       {/* 🔹 AI Follow-Up */}
