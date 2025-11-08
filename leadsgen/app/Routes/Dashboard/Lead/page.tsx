@@ -28,6 +28,7 @@ export interface Lead {
   status: string;
   createdAt: string;
   aiMessage: string;
+  leadScore?: Number;
 }
 
 export default function LeadsPage() {
@@ -165,6 +166,8 @@ export default function LeadsPage() {
                   <TableHead className="text-center">Status</TableHead>
                   <TableHead className="text-center">Created At</TableHead>
                   <TableHead className="text-center">AI Message</TableHead>
+                  <TableHead className="text-center">Lead Intent</TableHead>
+
                   <TableHead className="text-center">Follow-Up</TableHead>
                   <TableHead className="text-center">Actions</TableHead>
                 </TableRow>
@@ -183,6 +186,8 @@ export default function LeadsPage() {
                         {dayjs(lead?.createdAt)?.format("DD-MM-YYYY")}
                       </TableCell>
                       <TableCell className="max-w-[250px] text-center truncate">{lead.aiMessage}</TableCell>
+                      <TableCell className="max-w-[250px] text-center truncate">{lead?.leadScore?.toString() || "N/A"}</TableCell>
+
 
                       {/* 🔹 AI Follow-Up */}
                       <TableCell className="text-center">
