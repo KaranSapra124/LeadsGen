@@ -21,6 +21,9 @@ const LeadSchema = new mongoose.Schema(
             type: String,
             default: "",
         },
+        leadScore:{
+            type:Number,
+        }
     },
     { timestamps: true } // adds createdAt and updatedAt
 );

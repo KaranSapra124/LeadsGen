@@ -1,14 +1,17 @@
 import Leads from "../Model/Leads.js"
+import { genAILeadsScore } from "../Utils/utils.js"
 
 export const createLead = async (req, res) => {
     const leadData = {
         name: req.body.name,
         email: req.body.email,
-        status: req.body.status,
+        status: req?.body?.status,
         aiMessage: req.body.aiMessage
     }
     try {
-        await Leads.create(leadData);
+        const score = await genAILeadsScore(leadData?.aiMessage)
+
+        await Leads.create({ ...leadData, leadScore: +score });
         return res.status(200).send({ message: "Lead Created!" })
     }
     catch (err) {
