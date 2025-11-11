@@ -102,26 +102,4 @@ export const genAIFollowUps = async (req, res) => {
 
     }
 }
-export const genAILeadsScore = async (req, res) => {
-    console.log(req)
-    try {
-        const prompt = `
-    Lead info:
-    AI Message: ${req.body.aiMessage}
 
-    Analyze the intent of lead according to message and score it out 10  and only return it.
-  `;
-        const result = await genAI.models.generateContent({
-            model: "gemini-2.0-flash",
-            contents: prompt
-        });
-        return res.status(200).json({
-            message: "Intent Score Created!",
-            aiResponse: result.text
-        })
-
-    } catch (err) {
-        return res.status(500).json({ message: `Error: ${err.message}` })
-
-    }
-}
