@@ -5,9 +5,9 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     
     return (
         <>
-            <div className='flex'>
+            <div className='flex h-fit'>
                 <RootLayout />
-                <div className='md:px-10 md:py-5 px-2 py-3 mx-auto w-full'>
+                <div className='md:px-10 md:py-0 px-2 py-3 mx-auto w-full'>
                     {children}
                 </div>
             </div>
