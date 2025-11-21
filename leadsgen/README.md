@@ -1,4 +1,4 @@
-# LeadsGen.AI (Leads Genie)
+# LeadsGen.AI 
 
 **LeadsGen.AI** is a platform where you can enter leads and generate follow-up messages through AI according to their queries.
 
