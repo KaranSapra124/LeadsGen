@@ -1,36 +1,122 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LeadsGen.AI
 
-## Getting Started
+**LeadsGen.AI** is a platform where you can enter leads and generate follow-up messages through AI according to their queries.
 
-First, run the development server:
+**Live Backend URL:** [https://leadsgen-backend.onrender.com](https://leadsgen-backend.onrender.com)
+**Live Frontend URL:** [https://leadsgenie.netlify.app/](https://leadsgenie.netlify.app/)
+**Public GitHub Repo:** [https://github.com/KaranSapra124/LeadsGen](https://github.com/KaranSapra124/LeadsGen)
+
+---
+
+## Features
+
+* Add and manage leads efficiently
+* Generate AI-based follow-up messages using Google Gemini
+* Secure authentication with email and password (bcrypt hashed)
+* Responsive and interactive UI
+* Backend powered by Node.js, Express, and MongoDB
+
+---
+
+## Incremental Commits
+
+Here’s a summarized list of notable commits:
+
+| Commit    | Description                                         |
+| --------- | --------------------------------------------------- |
+| `c23fb84` | Added final touch up to modals                      |
+| `6665b1a` | Added final touch up to AI modal                    |
+| `d2f49d8` | Added AI for follow-up messages                     |
+| `0879a0e` | Integrated Google Gemini for AI follow-ups          |
+| `637e853` | Removed password length validation                  |
+| `a87ac18` | Added auth guard                                    |
+| `2af8924` | Improved add leads logic                            |
+| `56ac914` | Made sidebar responsive                             |
+| `2a87a10` | Updated register and login pages                    |
+| `00e01a2` | Added protection to dashboard                       |
+| `d82de20` | Added login module                                  |
+| `52f0c3d` | Added register authentication                       |
+| `7bd645e` | Created register and login pages                    |
+| `bf7eacd` | Implemented leads update functionality              |
+| `c395142` | Added 404 Not Found validation                      |
+| `0688581` | Implemented delete leads functionality              |
+| `8fdc839` | Added add leads and get leads functionality         |
+| `dde9c95` | Changed type module                                 |
+| `3c6712c` | Added database, routes, and controllers for backend |
+| `0fede9a` | Initial backend setup                               |
+| `b4a6f06` | Added redirection in root path                      |
+| `2dc99fe` | Styling improvements in leads view                  |
+
+---
+
+## Free Services Used
+
+* Google Gemini 2.5
+* MongoDB Atlas (Free Tier)
+
+---
+
+## Local Setup
+
+### Step 1: Clone Repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/KaranSapra124/LeadsGen.git
+cd LeadsGen
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Step 2: Frontend Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+cd frontend  # if frontend is in a separate folder
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Step 3: Backend Setup
 
-## Learn More
+```bash
+cd backend  # if backend is in a separate folder
+npm install
+node server
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Environment Variables
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Frontend
 
-## Deploy on Vercel
+Create `.env.local` in the frontend root directory:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+NEXT_PUBLIC_BACKEND_URL={Backend URL}
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Backend
+
+Create `.env` in the backend root directory:
+
+```
+DB_URL={MongoDB URL}
+JWT_SECRET=supersecretkey
+GEMINI_API_KEY={Google Gemini API Key}
+```
+
+---
+
+## Authentication
+
+* Email and password (bcrypt hashed)
+* **Demo credentials:**
+
+  * Email: `test@test.com`
+  * Password: `123456`
+
+---
+
+## Time Taken to Build
+
+32 hours
+
+
