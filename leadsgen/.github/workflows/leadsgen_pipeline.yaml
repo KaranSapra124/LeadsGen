@@ -2,7 +2,7 @@ name:leadsgen-pipeline
 
 on:
   push:
-    branches:['master']
+    branches: [master]
 
 jobs:
   build:
